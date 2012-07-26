@@ -48,6 +48,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 @property (MB_STRONG) NSTimer *graceTimer;
 @property (MB_STRONG) NSTimer *minShowTimer;
 @property (MB_STRONG) NSDate *showStarted;
+@property (MB_STRONG) UIImageView *customBackgroundImageView;
 @property (assign) CGSize size;
 
 @end
@@ -173,6 +174,9 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 		self.square = NO;
 		self.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin 
 								| UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
+        
+        self.customBackgroundImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+        [self addSubview:self.customBackgroundImageView];
 
 		// Transparent background
 		self.opaque = NO;
@@ -343,6 +347,13 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 	if (removeFromSuperViewOnHide) {
 		[self removeFromSuperview];
 	}
+}
+
+- (void)setCustomBackgroundImage:(UIImage *)customBackgroundImage
+{
+    _customBackgroundImage = customBackgroundImage;
+    [self.customBackgroundImageView setImage:_customBackgroundImage];
+    [self setNeedsDisplay];
 }
 
 #pragma mark - Threading
@@ -559,6 +570,11 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 	}
 	
 	self.size = totalSize;
+    
+    // Custom background image view
+    CGRect boxRect = CGRectMake(roundf((bounds.size.width - size.width) / 2) + self.xOffset,
+                                roundf((bounds.size.height - size.height) / 2) + self.yOffset, self.size.width, self.size.height);
+    [self.customBackgroundImageView setFrame:boxRect];
 }
 
 #pragma mark BG Drawing
@@ -594,20 +610,22 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
     }
 
 	
-	// Center HUD
-	CGRect allRect = self.bounds;
-	// Draw rounded HUD backgroud rect
-	CGRect boxRect = CGRectMake(roundf((allRect.size.width - size.width) / 2) + self.xOffset,
-								roundf((allRect.size.height - size.height) / 2) + self.yOffset, size.width, size.height);
-	float radius = 10.0f;
-	CGContextBeginPath(context);
-	CGContextMoveToPoint(context, CGRectGetMinX(boxRect) + radius, CGRectGetMinY(boxRect));
-	CGContextAddArc(context, CGRectGetMaxX(boxRect) - radius, CGRectGetMinY(boxRect) + radius, radius, 3 * (float)M_PI / 2, 0, 0);
-	CGContextAddArc(context, CGRectGetMaxX(boxRect) - radius, CGRectGetMaxY(boxRect) - radius, radius, 0, (float)M_PI / 2, 0);
-	CGContextAddArc(context, CGRectGetMinX(boxRect) + radius, CGRectGetMaxY(boxRect) - radius, radius, (float)M_PI / 2, (float)M_PI, 0);
-	CGContextAddArc(context, CGRectGetMinX(boxRect) + radius, CGRectGetMinY(boxRect) + radius, radius, (float)M_PI, 3 * (float)M_PI / 2, 0);
-	CGContextClosePath(context);
-	CGContextFillPath(context);
+    if (!self.customBackgroundImage) {	
+        // Center HUD
+	    CGRect allRect = self.bounds;
+	    // Draw rounded HUD backgroud rect
+	    CGRect boxRect = CGRectMake(roundf((allRect.size.width - size.width) / 2) + self.xOffset,
+								    roundf((allRect.size.height - size.height) / 2) + self.yOffset, size.width, size.height);
+	    float radius = 10.0f;
+	    CGContextBeginPath(context);
+	    CGContextMoveToPoint(context, CGRectGetMinX(boxRect) + radius, CGRectGetMinY(boxRect));
+	    CGContextAddArc(context, CGRectGetMaxX(boxRect) - radius, CGRectGetMinY(boxRect) + radius, radius, 3 * (float)M_PI / 2, 0, 0);
+	    CGContextAddArc(context, CGRectGetMaxX(boxRect) - radius, CGRectGetMaxY(boxRect) - radius, radius, 0, (float)M_PI / 2, 0);
+	    CGContextAddArc(context, CGRectGetMinX(boxRect) + radius, CGRectGetMaxY(boxRect) - radius, radius, (float)M_PI / 2, (float)M_PI, 0);
+	    CGContextAddArc(context, CGRectGetMinX(boxRect) + radius, CGRectGetMinY(boxRect) + radius, radius, (float)M_PI, 3 * (float)M_PI / 2, 0);
+	    CGContextClosePath(context);
+	    CGContextFillPath(context);
+    }
 }
 
 #pragma mark - KVO

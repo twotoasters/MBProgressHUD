@@ -287,6 +287,13 @@ typedef void (^MBProgressHUDCompletionBlock)();
 @property (MB_STRONG) UIView *customView;
 
 /** 
+ * Custom background image. This background image will replace the 
+ * black rounded rect background. You should pass in a UIImage that
+ * has resizeable edge insets.
+ */
+@property (nonatomic, MB_STRONG) UIImage *customBackgroundImage;
+
+/** 
  * The HUD delegate object. 
  *
  * @see MBProgressHUDDelegate
