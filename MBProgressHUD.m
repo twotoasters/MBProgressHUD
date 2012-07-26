@@ -163,6 +163,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
         self.color = nil;
 		self.labelFont = [UIFont boldSystemFontOfSize:kLabelFontSize];
 		self.detailsLabelFont = [UIFont boldSystemFontOfSize:kDetailsLabelFontSize];
+        self.labelTextColor = [UIColor whiteColor];
 		self.xOffset = 0.0f;
 		self.yOffset = 0.0f;
 		self.dimBackground = NO;
@@ -174,6 +175,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 		self.square = NO;
 		self.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin 
 								| UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
+        self.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
         
         self.customBackgroundImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
         [self addSubview:self.customBackgroundImageView];
@@ -356,6 +358,20 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
     [self setNeedsDisplay];
 }
 
+- (void)setActivityIndicatorViewStyle:(UIActivityIndicatorViewStyle)activityIndicatorViewStyle
+{
+    _activityIndicatorViewStyle = activityIndicatorViewStyle;
+    [indicator removeFromSuperview];
+    self.indicator = nil;
+    [self updateIndicators];
+}
+
+- (void)setLabelTextColor:(UIColor *)labelTextColor
+{
+    _labelTextColor = labelTextColor;
+    label.textColor = _labelTextColor;
+}
+
 #pragma mark - Threading
 
 - (void)showWhileExecuting:(SEL)method onTarget:(id)target withObject:(id)object animated:(BOOL)animated {
@@ -431,7 +447,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 	label.textAlignment = UITextAlignmentCenter;
 	label.opaque = NO;
 	label.backgroundColor = [UIColor clearColor];
-	label.textColor = [UIColor whiteColor];
+	label.textColor = self.labelTextColor;
 	label.font = self.labelFont;
 	label.text = self.labelText;
 	[self addSubview:label];
@@ -458,7 +474,8 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 		// Update to indeterminate indicator
 		[indicator removeFromSuperview];
 		self.indicator = MB_AUTORELEASE([[UIActivityIndicatorView alloc]
-										 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge]);
+										 initWithActivityIndicatorStyle:self.activityIndicatorViewStyle]);
+        [self.indicator setTransform:CGAffineTransformMakeScale(0.75, 0.75)];
 		[(UIActivityIndicatorView *)indicator startAnimating];
 		[self addSubview:indicator];
 	}

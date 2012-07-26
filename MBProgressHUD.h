@@ -384,6 +384,8 @@ typedef void (^MBProgressHUDCompletionBlock)();
  */
 @property (MB_STRONG) UIFont* labelFont;
 
+@property (nonatomic, MB_STRONG) UIColor *labelTextColor;
+
 /** 
  * Font to be used for the details label. Set this property if the default is not adequate. 
  */
@@ -403,6 +405,8 @@ typedef void (^MBProgressHUDCompletionBlock)();
  * Force the HUD dimensions to be equal if possible. 
  */
 @property (assign, getter = isSquare) BOOL square;
+
+@property (nonatomic, assign) UIActivityIndicatorViewStyle activityIndicatorViewStyle;
 
 @end
 
